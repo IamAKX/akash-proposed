@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Will You Be My Valentine? 💝</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Montserrat:wght@300;400&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 50%, #fbc2eb 100%);
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Animated hearts background */
+        .heart-bg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .floating-heart {
+            position: absolute;
+            font-size: 20px;
+            opacity: 0.3;
+            animation: float 10s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.3;
+            }
+            90% {
+                opacity: 0.3;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 60px 80px;
+            border-radius: 30px;
+            box-shadow: 0 30px 90px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 600px;
+            position: relative;
+            z-index: 1;
+            backdrop-filter: blur(10px);
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 48px;
+            color: #c7365f;
+            margin-bottom: 50px;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(199, 54, 95, 0.1);
+        }
+
+        .button-container {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            align-items: center;
+            margin-top: 40px;
+            position: relative;
+            min-height: 80px;
+        }
+
+        button {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 24px;
+            padding: 18px 45px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 400;
+            letter-spacing: 1px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        #yesBtn {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        #yesBtn:hover {
+            transform: scale(1.08);
+            box-shadow: 0 12px 35px rgba(245, 87, 108, 0.4);
+        }
+
+        #noBtn {
+            background: #e8e8e8;
+            color: #666;
+        }
+
+        #noBtn:hover {
+            background: #d8d8d8;
+        }
+
+        /* Success animation */
+        .celebration {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1000;
+            pointer-events: none;
+        }
+
+        .celebration.active {
+            display: block;
+        }
+
+        .heart-burst {
+            position: absolute;
+            font-size: 30px;
+            animation: burst 2s ease-out forwards;
+        }
+
+        @keyframes burst {
+            0% {
+                transform: translate(0, 0) scale(0);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(var(--tx), var(--ty)) scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        .success-message {
+            display: none;
+            animation: fadeInScale 0.8s ease-out;
+        }
+
+        .success-message.active {
+            display: block;
+        }
+
+        @keyframes fadeInScale {
+            0% {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .success-message h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 56px;
+            color: #c7365f;
+            margin-bottom: 20px;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        .success-message p {
+            font-size: 24px;
+            color: #666;
+            margin-top: 15px;
+        }
+
+        /* Confetti animation */
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #f093fb;
+            animation: confetti-fall 3s linear infinite;
+        }
+
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating hearts background -->
+    <div class="heart-bg" id="heartBg"></div>
+
+    <!-- Celebration overlay -->
+    <div class="celebration" id="celebration"></div>
+
+    <!-- Main container -->
+    <div class="container" id="mainContainer">
+        <h1>Will You Be My Valentine? 💕</h1>
+        
+        <div class="success-message" id="successMessage">
+            <h2>Yay! 🎉💖</h2>
+            <p>You've made me the happiest person! 😊</p>
+            <p style="font-size: 40px; margin-top: 20px;">❤️❤️❤️</p>
+        </div>
+
+        <div class="button-container" id="buttonContainer">
+            <button id="yesBtn">Yes! 💖</button>
+            <button id="noBtn">No</button>
+        </div>
+    </div>
+
+    <script>
+        // Create floating hearts background
+        const heartBg = document.getElementById('heartBg');
+        const hearts = ['💕', '💖', '💗', '💓', '💝', '❤️', '💘'];
+        
+        for (let i = 0; i < 15; i++) {
+            const heart = document.createElement('div');
+            heart.className = 'floating-heart';
+            heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+            heart.style.left = Math.random() * 100 + '%';
+            heart.style.animationDelay = Math.random() * 10 + 's';
+            heart.style.animationDuration = (Math.random() * 5 + 8) + 's';
+            heartBg.appendChild(heart);
+        }
+
+        const noBtn = document.getElementById('noBtn');
+        const yesBtn = document.getElementById('yesBtn');
+        const buttonContainer = document.getElementById('buttonContainer');
+        const mainContainer = document.getElementById('mainContainer');
+        const successMessage = document.getElementById('successMessage');
+        const celebration = document.getElementById('celebration');
+
+        let noBtnClicks = 0;
+
+        // Move No button away from cursor - SIMPLIFIED AND BULLETPROOF
+        noBtn.addEventListener('mouseenter', function(e) {
+            noBtnClicks++;
+            
+            // After a few escapes, make the button smaller and change text
+            if (noBtnClicks === 3) {
+                noBtn.textContent = 'No? 🥺';
+            } else if (noBtnClicks === 5) {
+                noBtn.textContent = 'Please? 💔';
+                noBtn.style.fontSize = '18px';
+                noBtn.style.padding = '15px 35px';
+            } else if (noBtnClicks === 7) {
+                noBtn.textContent = 'Maybe? 🥹';
+                noBtn.style.fontSize = '16px';
+                noBtn.style.padding = '12px 30px';
+            }
+            
+            // Simple, reliable approach: use percentage-based positioning
+            // This keeps the button in a safe zone that's well within screen bounds
+            
+            // Define safe zone - more conservative to account for button size
+            const minPercent = 8;
+            const maxPercent = 65;  // Reduced from 75 to keep well away from right edge
+            
+            // Get current position for distance check
+            const currentRect = noBtn.getBoundingClientRect();
+            const currentPercentX = (currentRect.left / window.innerWidth) * 100;
+            const currentPercentY = (currentRect.top / window.innerHeight) * 100;
+            
+            // Generate new position as percentages
+            let newPercentX, newPercentY;
+            let attempts = 0;
+            
+            do {
+                newPercentX = minPercent + Math.random() * (maxPercent - minPercent);
+                newPercentY = minPercent + Math.random() * (maxPercent - minPercent);
+                attempts++;
+            } while (
+                attempts < 30 && 
+                (Math.abs(newPercentX - currentPercentX) < 15 || Math.abs(newPercentY - currentPercentY) < 15)
+            );
+            
+            // Convert percentages to pixels
+            const newX = (newPercentX / 100) * window.innerWidth;
+            const newY = (newPercentY / 100) * window.innerHeight;
+            
+            // Apply position
+            noBtn.style.position = 'fixed';
+            noBtn.style.left = newX + 'px';
+            noBtn.style.top = newY + 'px';
+            noBtn.style.transform = 'none';
+            noBtn.style.margin = '0';
+        });
+
+        // Yes button click - celebration!
+        yesBtn.addEventListener('click', function() {
+            buttonContainer.style.display = 'none';
+            successMessage.classList.add('active');
+            celebration.classList.add('active');
+            
+            // Create heart burst effect
+            const centerX = window.innerWidth / 2;
+            const centerY = window.innerHeight / 2;
+            
+            for (let i = 0; i < 30; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'heart-burst';
+                heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+                
+                const angle = (Math.PI * 2 * i) / 30;
+                const distance = 200 + Math.random() * 200;
+                const tx = Math.cos(angle) * distance;
+                const ty = Math.sin(angle) * distance;
+                
+                heart.style.left = centerX + 'px';
+                heart.style.top = centerY + 'px';
+                heart.style.setProperty('--tx', tx + 'px');
+                heart.style.setProperty('--ty', ty + 'px');
+                heart.style.animationDelay = (i * 0.03) + 's';
+                
+                celebration.appendChild(heart);
+            }
+            
+            // Create confetti
+            const confettiColors = ['#f093fb', '#f5576c', '#ffd700', '#ff69b4', '#87ceeb'];
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.background = confettiColors[Math.floor(Math.random() * confettiColors.length)];
+                confetti.style.animationDelay = Math.random() * 3 + 's';
+                confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                celebration.appendChild(confetti);
+            }
+        });
+
+        // Also allow clicking No button (in case user really wants to)
+        noBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            // Trigger the mouseenter effect
+            noBtn.dispatchEvent(new Event('mouseenter'));
+        });
+    </script>
+</body>
+</html>
