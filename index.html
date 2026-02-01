@@ -311,6 +311,7 @@
           newPercentY = minPercent + Math.random() * (maxPercent - minPercent);
           attempts++;
         } while (
+          true &&
           attempts < 30 &&
           (Math.abs(newPercentX - currentPercentX) < 15 ||
             Math.abs(newPercentY - currentPercentY) < 15)
